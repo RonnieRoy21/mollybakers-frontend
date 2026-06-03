@@ -48,46 +48,42 @@ function HomeGrid() {
             variant="outlined"
             elevation={3}
           >
-            <CardHeader
-              title={
-                <Typography align="center" variant="body1">
-                  {item.toString()}
-                </Typography>
-              }
-            />
             <CardMedia
               component="img"
               height={100}
               image="https://imgs.search.brave.com/fAElvsxwDcHa133QnF78DAYxsteyhYPJ0sBpNHFcx6A/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wbGF0/ZWRjcmF2aW5ncy5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjUvMDkvQmxhY2st/Rm9yZXN0LUNha2Ut/UmVjaXBlLVBsYXRl/ZC1DcmF2aW5ncy0y/LTMwMHgzMDAuanBn"
             />
             <CardContent>
+              <Typography align="left" variant="body1">
+                {item.toString()}
+              </Typography>
               <Typography noWrap>
                 Cake Description appears here on this part
               </Typography>
               <Typography noWrap>Ksh</Typography>
             </CardContent>
             <CardActions>
-              <Stack
-                sx={HomeGridStyles.cardActions}
-                spacing={5}
-                direction={"row"}
-              >
-                <IconButton
-                  onClick={() => handleLikeCake(item)}
-                  color={likedItems.includes(item) ? "primary" : "default"}
-                >
-                  <FavoriteIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleAddToCart(item)}
-                  color={cartItems.includes(item) ? "success" : "default"}
-                >
-                  {cartItems.includes(item) ? (
-                    <CheckIcon />
-                  ) : (
-                    <AddShoppingCartIcon />
-                  )}
-                </IconButton>
+              <Stack direction={"row"}>
+                <Stack sx={HomeGridStyles.cardActionStack}>
+                  <IconButton
+                    onClick={() => handleLikeCake(item)}
+                    color={likedItems.includes(item) ? "primary" : "default"}
+                  >
+                    <FavoriteIcon />
+                  </IconButton>
+                </Stack>
+                <Stack>
+                  <IconButton
+                    onClick={() => handleAddToCart(item)}
+                    color={cartItems.includes(item) ? "success" : "default"}
+                  >
+                    {cartItems.includes(item) ? (
+                      <CheckIcon />
+                    ) : (
+                      <AddShoppingCartIcon />
+                    )}
+                  </IconButton>
+                </Stack>
               </Stack>
             </CardActions>
           </Card>

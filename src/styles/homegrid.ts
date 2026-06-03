@@ -5,16 +5,16 @@ class HomeGridStyles {
     backgroundColor: "burlywood",
     padding: 2,
     marginTop: 15,
-    width: "fill",
+    width: "fit-content",
   };
   static card: SxProps<Theme> = {
-    width: 150,
+    width: 130,
     height: "fit-content",
-    padding: 1,
-    borderRadius: 5,
+    borderRadius: 2,
+    padding: 0.5,
   };
 
-  static cardActions: SxProps<Theme> = {
+  static cardActionStack: SxProps<Theme> = {
     flexGrow: 1,
   };
   static isNotLiked: SxProps<Theme> = {
