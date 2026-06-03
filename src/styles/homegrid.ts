@@ -3,9 +3,19 @@ import type { SxProps, Theme } from "@mui/material/styles";
 class HomeGridStyles {
   static grid: SxProps<Theme> = {
     backgroundColor: "burlywood",
-    padding: 2,
-    marginTop: 15,
+    padding: 0.1,
+    paddingTop: 1,
     width: "fit-content",
+  };
+  static mainstack: SxProps<Theme> = {
+    backgroundColor: "grey",
+    padding: 1,
+    marginTop: 8,
+  };
+  static filterStack: SxProps<Theme> = {
+    position: "sticky",
+    top: 60,
+    backgroundColor: "skyblue",
   };
   static card: SxProps<Theme> = {
     width: 130,

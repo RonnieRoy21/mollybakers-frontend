@@ -1,19 +1,21 @@
 import {
   Grid,
   Card,
-  CardHeader,
   CardContent,
   CardMedia,
   Typography,
   CardActions,
   IconButton,
   Stack,
+  MenuItem,
+  TextField,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import CheckIcon from "@mui/icons-material/Check";
 import { useState } from "react";
 import HomeGridStyles from "../styles/homegrid";
+import { NavBarstyles } from "../styles/navbar";
 
 const items: number[] = [
   10, 2, 45, 3, 7, 9, 4, 30, 47, 1, 6, 5, 23, 60, 50, 87, 19,
@@ -38,6 +40,7 @@ function HomeGrid() {
       setLikedItems([...likedItems, item]);
     }
   };
+
   return (
     <>
       <Grid sx={HomeGridStyles.grid} container spacing={1} rowSpacing={3}>

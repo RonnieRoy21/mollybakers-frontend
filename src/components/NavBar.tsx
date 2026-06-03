@@ -1,27 +1,11 @@
-import { AppBar, Button, MenuItem, Stack, TextField } from "@mui/material";
+import { AppBar, Button, Stack } from "@mui/material";
 import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
 import Home from "../screens/Home";
 import SignupForm from "./SignupForm";
-import { useState } from "react";
 import LoginForm from "./LoginForm";
 import { NavBarstyles } from "../styles/navbar";
 
 function NavBar() {
-  const categoryList: string[] = [
-    "cakes",
-    "bread",
-    "muffins",
-    "asian",
-    "custom",
-  ];
-  const [selectedCategory, setSelectedCategory] = useState("");
-
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const c = e.target.value;
-    setSelectedCategory(c);
-    console.log(c);
-  };
-
   return (
     <>
       <BrowserRouter>
@@ -33,7 +17,7 @@ function NavBar() {
             position="fixed"
           >
             <nav>
-              <Stack direction={"column-reverse"}>
+              <Stack direction={"row"}>
                 <Stack direction="row" sx={NavBarstyles.menuStack}>
                   <Link to="/">
                     <Button sx={NavBarstyles.menuBtns} variant="text">
@@ -50,22 +34,8 @@ function NavBar() {
                       Offers
                     </Button>
                   </Link>
-                  <TextField
-                    label="Filter"
-                    sx={NavBarstyles.categoryBox}
-                    select
-                    value={selectedCategory}
-                    onChange={handleCategoryChange}
-                  >
-                    {categoryList.map((item, index) => (
-                      <MenuItem key={index} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <TextField variant="filled" label="Search..." size="small" />
                 </Stack>
-                <Stack spacing={0.3} direction="row-reverse">
+                <Stack sx={NavBarstyles.authStack} direction={"row"}>
                   <Link to="/login">
                     <Button size="small" variant="contained">
                       Login

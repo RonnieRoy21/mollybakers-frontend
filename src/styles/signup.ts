@@ -7,7 +7,6 @@ export class SignUpStyles {
     paddingTop: 5,
     paddingLeft: "30%",
     paddingRight: "30%",
-
     backgroundColor: "burlywood",
   };
 }
