@@ -126,7 +126,6 @@ function HomeGrid() {
     item.isLiked = !item.isLiked;
     setLikedItems([...likedItems, cart.likeItem(item)]);
   };
-
   return (
     <>
       <Grid sx={HomeGridStyles.grid} container spacing={1} rowSpacing={3}>

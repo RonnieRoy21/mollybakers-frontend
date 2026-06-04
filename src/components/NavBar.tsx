@@ -10,12 +10,7 @@ function NavBar() {
     <>
       <BrowserRouter>
         <header>
-          <AppBar
-            sx={NavBarstyles.navBar}
-            color="error"
-            enableColorOnDark
-            position="fixed"
-          >
+          <AppBar sx={NavBarstyles.navBar} enableColorOnDark position="fixed">
             <nav>
               <Stack direction={"column-reverse"}>
                 <Stack direction="row" sx={NavBarstyles.menuStack}>
