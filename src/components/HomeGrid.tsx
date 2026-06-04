@@ -5,37 +5,122 @@ import {
   CardMedia,
   Typography,
   CardActions,
-  IconButton,
   Stack,
+  Button,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import CheckIcon from "@mui/icons-material/Check";
+
 import { useState } from "react";
 import HomeGridStyles from "../styles/homegrid";
+import { CartModel } from "../models/CartModel";
+import type { cartItem } from "../models/cartItem";
 
-const items: number[] = [
-  10, 2, 45, 3, 7, 9, 4, 30, 47, 1, 6, 5, 23, 60, 50, 87, 19,
+const items: cartItem[] = [
+  {
+    id: 1,
+    name: "Chocolate Fudge ",
+    description: "Rich chocolate sponge layered with creamy fudge frosting.",
+    price: 24.99,
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587",
+    likes: 128,
+    isLiked: false,
+  },
+  {
+    id: 2,
+    name: "Red Velvet",
+    description: "Classic red velvet cake with smooth cream cheese frosting.",
+    price: 29.99,
+    image: "https://images.unsplash.com/photo-1586788680434-30d324d324f8",
+    likes: 96,
+    isLiked: true,
+  },
+  {
+    id: 3,
+    name: "Vanilla Bean",
+    description: "Light and fluffy vanilla cake made with real vanilla beans.",
+    price: 22.5,
+    image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3",
+    likes: 74,
+    isLiked: false,
+  },
+  {
+    id: 4,
+    name: "Strawberry Shortcake",
+    description:
+      "Fresh strawberries layered with whipped cream and sponge cake.",
+    price: 27.99,
+    image: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e",
+    likes: 112,
+    isLiked: true,
+  },
+  {
+    id: 5,
+    name: "Black Forest",
+    description: "Chocolate cake layered with cherries and whipped cream.",
+    price: 31.99,
+    image: "https://images.unsplash.com/photo-1551024506-0bccd828d307",
+    likes: 143,
+    isLiked: false,
+  },
+  {
+    id: 6,
+    name: "Lemon Drizzle",
+    description: "Moist lemon cake topped with a tangy citrus glaze.",
+    price: 21.99,
+    image: "https://images.unsplash.com/photo-1621303837174-89787a7d4729",
+    likes: 58,
+    isLiked: false,
+  },
+  {
+    id: 7,
+    name: "Carrot Cake",
+    description: "Spiced carrot cake with walnuts and cream cheese frosting.",
+    price: 25.99,
+    image: "https://images.unsplash.com/photo-1623428454614-abafdeff8b45",
+    likes: 89,
+    isLiked: true,
+  },
+  {
+    id: 8,
+    name: "Cheesecake Delight",
+    description: "Creamy baked cheesecake with a buttery biscuit crust.",
+    price: 33.5,
+    image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad",
+    likes: 167,
+    isLiked: false,
+  },
+  {
+    id: 9,
+    name: "Rainbow Celebration",
+    description: "Colorful layered cake perfect for birthdays and parties.",
+    price: 39.99,
+    image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d",
+    likes: 201,
+    isLiked: true,
+  },
+  {
+    id: 10,
+    name: "Tiramisu Cake",
+    description: "Coffee-infused cake with mascarpone cream and cocoa dusting.",
+    price: 34.99,
+    image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9",
+    likes: 121,
+    isLiked: false,
+  },
 ];
+const cartModel = new CartModel();
 
 function HomeGrid() {
-  const [cartItems, setCartItems] = useState<number[]>([]);
-  const [likedItems, setLikedItems] = useState<number[]>([]);
+  const [cartItems, setCartItems] = useState<cartItem[]>([]);
+  const [likedItems, setLikedItems] = useState<cartItem[]>([]);
 
-  const handleAddToCart = (item: number) => {
-    if (cartItems.includes(item)) {
-      setCartItems(cartItems.filter((t) => t !== item));
-      return;
-    }
-    setCartItems([...cartItems, item]);
+  const handleAddToCart = (item: cartItem) => {
+    setCartItems(cartModel.addToCart(item));
   };
 
-  const handleLikeCake = (item: number) => {
-    if (likedItems.includes(item)) {
-      setLikedItems(likedItems.filter((t) => t !== item));
-    } else {
-      setLikedItems([...likedItems, item]);
-    }
+  const handleLikeCake = (item: cartItem) => {
+    item.isLiked = !item.isLiked;
+    setLikedItems([...likedItems, cartModel.likeItem(item)]);
   };
 
   return (
@@ -48,42 +133,36 @@ function HomeGrid() {
             variant="outlined"
             elevation={3}
           >
-            <CardMedia
-              component="img"
-              height={100}
-              image="https://imgs.search.brave.com/fAElvsxwDcHa133QnF78DAYxsteyhYPJ0sBpNHFcx6A/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wbGF0/ZWRjcmF2aW5ncy5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjUvMDkvQmxhY2st/Rm9yZXN0LUNha2Ut/UmVjaXBlLVBsYXRl/ZC1DcmF2aW5ncy0y/LTMwMHgzMDAuanBn"
-            />
+            <CardMedia component="img" height={100} image={item.image} />
             <CardContent>
-              <Typography align="left" variant="body1">
-                {item.toString()}
+              <Typography align="left" variant="h6">
+                {item.name}
               </Typography>
-              <Typography noWrap>
-                Cake Description appears here on this part
+              <Typography noWrap variant="body2">
+                Ksh {item.price}
               </Typography>
-              <Typography noWrap>Ksh</Typography>
             </CardContent>
             <CardActions>
-              <Stack direction={"row"}>
-                <Stack sx={HomeGridStyles.cardActionStack}>
-                  <IconButton
-                    onClick={() => handleLikeCake(item)}
-                    color={likedItems.includes(item) ? "primary" : "default"}
-                  >
-                    <FavoriteIcon />
-                  </IconButton>
-                </Stack>
-                <Stack>
-                  <IconButton
-                    onClick={() => handleAddToCart(item)}
-                    color={cartItems.includes(item) ? "success" : "default"}
-                  >
-                    {cartItems.includes(item) ? (
-                      <CheckIcon />
-                    ) : (
-                      <AddShoppingCartIcon />
-                    )}
-                  </IconButton>
-                </Stack>
+              <Stack>
+                <Button
+                  endIcon={
+                    <FavoriteIcon
+                      color={item.isLiked ? "primary" : "disabled"}
+                    />
+                  }
+                  size="large"
+                  title="likes"
+                  onClick={() => handleLikeCake(item)}
+                >
+                  {item.likes}
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => handleAddToCart(item)}
+                >
+                  {cartItems.includes(item) ? "Added" : "Add To Cart"}
+                </Button>
               </Stack>
             </CardActions>
           </Card>
