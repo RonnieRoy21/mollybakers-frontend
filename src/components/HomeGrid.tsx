@@ -108,19 +108,23 @@ const items: cartItem[] = [
     isLiked: false,
   },
 ];
-const cartModel = new CartModel();
 
 function HomeGrid() {
+  const cart = new CartModel();
   const [cartItems, setCartItems] = useState<cartItem[]>([]);
   const [likedItems, setLikedItems] = useState<cartItem[]>([]);
 
   const handleAddToCart = (item: cartItem) => {
-    setCartItems(cartModel.addToCart(item));
+    if (cartItems.some((c) => c.id === item.id)) {
+      setCartItems(cartItems.filter((x) => x.id !== item.id));
+      return;
+    }
+    setCartItems((current) => [...current, item]);
   };
 
   const handleLikeCake = (item: cartItem) => {
     item.isLiked = !item.isLiked;
-    setLikedItems([...likedItems, cartModel.likeItem(item)]);
+    setLikedItems([...likedItems, cart.likeItem(item)]);
   };
 
   return (
@@ -157,7 +161,7 @@ function HomeGrid() {
                   {item.likes}
                 </Button>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   size="small"
                   onClick={() => handleAddToCart(item)}
                 >

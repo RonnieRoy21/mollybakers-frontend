@@ -6,19 +6,13 @@ export class CartModel {
 
   //add to cart
   public addToCart(item: cartItem) {
-    if (this.cartItems.includes(item)) {
-      return this.cartItems;
-    }
     this.cartItems.push(item);
     return this.cartItems;
   }
   //remove from cart
   public removeFromCart(item: cartItem) {
-    if (this.cartItems.includes(item)) {
-      this.cartItems.filter((i) => i !== item);
-      return;
-    }
-    return;
+    this.cartItems = this.cartItems.filter((i) => i !== item);
+    return this.cartItems;
   }
   public likeItem(item: cartItem) {
     if (item.isLiked) {

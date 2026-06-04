@@ -12,12 +12,12 @@ function NavBar() {
         <header>
           <AppBar
             sx={NavBarstyles.navBar}
-            color="default"
+            color="error"
             enableColorOnDark
             position="fixed"
           >
             <nav>
-              <Stack direction={"row"}>
+              <Stack direction={"column-reverse"}>
                 <Stack direction="row" sx={NavBarstyles.menuStack}>
                   <Link to="/">
                     <Button sx={NavBarstyles.menuBtns} variant="text">
@@ -35,7 +35,7 @@ function NavBar() {
                     </Button>
                   </Link>
                 </Stack>
-                <Stack sx={NavBarstyles.authStack} direction={"row"}>
+                <Stack sx={NavBarstyles.authStack} direction={"row-reverse"}>
                   <Link to="/login">
                     <Button size="small" variant="contained">
                       Login
