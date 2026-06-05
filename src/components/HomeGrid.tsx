@@ -7,15 +7,19 @@ import {
   CardActions,
   Stack,
   Button,
+  IconButton,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import { useState } from "react";
 import HomeGridStyles from "../styles/homegrid";
 import { CartModel } from "../models/CartModel";
-import type { cartItem } from "../models/cartItem";
+import type { CakeModel } from "../models/ItemModel";
+import { useAppDispatch, useAppSelector } from "../redux/config";
+import { addToCart, removeFromCart } from "../redux/CartStore";
 
-const items: cartItem[] = [
+const items: CakeModel[] = [
   {
     id: 1,
     name: "Chocolate Fudge ",
@@ -24,6 +28,7 @@ const items: cartItem[] = [
     image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587",
     likes: 128,
     isLiked: false,
+    quantity: 1,
   },
   {
     id: 2,
@@ -33,6 +38,7 @@ const items: cartItem[] = [
     image: "https://images.unsplash.com/photo-1586788680434-30d324d324f8",
     likes: 96,
     isLiked: true,
+    quantity: 1,
   },
   {
     id: 3,
@@ -42,6 +48,7 @@ const items: cartItem[] = [
     image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3",
     likes: 74,
     isLiked: false,
+    quantity: 1,
   },
   {
     id: 4,
@@ -52,6 +59,7 @@ const items: cartItem[] = [
     image: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e",
     likes: 112,
     isLiked: true,
+    quantity: 1,
   },
   {
     id: 5,
@@ -61,6 +69,7 @@ const items: cartItem[] = [
     image: "https://images.unsplash.com/photo-1551024506-0bccd828d307",
     likes: 143,
     isLiked: false,
+    quantity: 1,
   },
   {
     id: 6,
@@ -69,7 +78,9 @@ const items: cartItem[] = [
     price: 21.99,
     image: "https://images.unsplash.com/photo-1621303837174-89787a7d4729",
     likes: 58,
+
     isLiked: false,
+    quantity: 1,
   },
   {
     id: 7,
@@ -79,6 +90,7 @@ const items: cartItem[] = [
     image: "https://images.unsplash.com/photo-1623428454614-abafdeff8b45",
     likes: 89,
     isLiked: true,
+    quantity: 1,
   },
   {
     id: 8,
@@ -88,6 +100,7 @@ const items: cartItem[] = [
     image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad",
     likes: 167,
     isLiked: false,
+    quantity: 1,
   },
   {
     id: 9,
@@ -97,6 +110,7 @@ const items: cartItem[] = [
     image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d",
     likes: 201,
     isLiked: true,
+    quantity: 1,
   },
   {
     id: 10,
@@ -106,29 +120,39 @@ const items: cartItem[] = [
     image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9",
     likes: 121,
     isLiked: false,
+
+    quantity: 1,
   },
 ];
 
 function HomeGrid() {
-  const cart = new CartModel();
-  const [cartItems, setCartItems] = useState<cartItem[]>([]);
-  const [likedItems, setLikedItems] = useState<cartItem[]>([]);
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.cartItems);
+  const [likedItems, setLikedItems] = useState<CakeModel[]>([]);
 
-  const handleAddToCart = (item: cartItem) => {
+  const handleAddToCart = (item: CakeModel) => {
     if (cartItems.some((c) => c.id === item.id)) {
-      setCartItems(cartItems.filter((x) => x.id !== item.id));
-      return;
+      dispatch(removeFromCart(item));
     }
-    setCartItems((current) => [...current, item]);
+    dispatch(addToCart(item));
   };
 
-  const handleLikeCake = (item: cartItem) => {
-    item.isLiked = !item.isLiked;
-    setLikedItems([...likedItems, cart.likeItem(item)]);
-  };
+  const handleLikeCake = (item: CakeModel) => {};
   return (
     <>
-      <Grid sx={HomeGridStyles.grid} container spacing={1} rowSpacing={3}>
+      <Grid
+        sx={HomeGridStyles.grid}
+        size={{
+          xs: 12,
+          sm: 6,
+          md: 4,
+          lg: 3,
+          xl: 2,
+        }}
+        container
+        spacing={1}
+        rowSpacing={2}
+      >
         {items.map((item, index) => (
           <Card
             key={index}
@@ -138,34 +162,38 @@ function HomeGrid() {
           >
             <CardMedia component="img" height={100} image={item.image} />
             <CardContent>
-              <Typography align="left" variant="h6">
+              <Typography sx={HomeGridStyles.texts} align="left" variant="h6">
                 {item.name}
               </Typography>
-              <Typography noWrap variant="body2">
+              <Typography sx={HomeGridStyles.texts} noWrap variant="body2">
                 Ksh {item.price}
               </Typography>
             </CardContent>
             <CardActions>
-              <Stack>
+              <Stack spacing={2} direction={"row"}>
                 <Button
                   endIcon={
                     <FavoriteIcon
                       color={item.isLiked ? "primary" : "disabled"}
                     />
                   }
-                  size="large"
+                  size="small"
                   title="likes"
                   onClick={() => handleLikeCake(item)}
                 >
                   {item.likes}
                 </Button>
-                <Button
-                  variant="contained"
-                  size="small"
+                <IconButton
+                  color={
+                    cartItems.some((c) => c.id === item.id)
+                      ? "secondary"
+                      : "default"
+                  }
+                  title="Add to cart"
                   onClick={() => handleAddToCart(item)}
                 >
-                  {cartItems.includes(item) ? "Added" : "Add To Cart"}
-                </Button>
+                  <ShoppingCartIcon />
+                </IconButton>
               </Stack>
             </CardActions>
           </Card>

@@ -2,7 +2,10 @@ import { Button, Container, Stack, TextField } from "@mui/material";
 import { LoginFormstyles } from "../styles/loginform";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useState } from "react";
+import { useAppDispatch } from "../redux/config";
+import { login } from "../redux/AuthStore";
 function LoginForm() {
+  const dispatch = useAppDispatch();
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [emailErr, setEmailErr] = useState<boolean>(false);
@@ -19,6 +22,7 @@ function LoginForm() {
       setEmailErr(true);
       return;
     }
+    dispatch(login());
     console.log(loginEmail);
     console.log(loginPassword);
   };

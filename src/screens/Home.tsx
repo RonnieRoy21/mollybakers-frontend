@@ -1,6 +1,5 @@
 import { MenuItem, Stack, TextField } from "@mui/material";
 import HomeGrid from "../components/HomeGrid";
-import HomeGridStyles from "../styles/homegrid";
 import { NavBarstyles } from "../styles/navbar";
 import { useState } from "react";
 
@@ -21,11 +20,29 @@ function Home() {
   };
   return (
     <>
-      <Stack sx={HomeGridStyles.mainstack}>
+      <Stack
+        sx={{
+          backgroundColor: "skyblue",
+          marginTop: 8,
+          opacity: 1,
+        }}
+      >
         <Stack
-          direction={"row-reverse"}
           spacing={1}
-          sx={HomeGridStyles.filterStack}
+          sx={{
+            backgroundColor: "darkgray",
+            position: "sticky",
+            top: "10%",
+            opacity: 1,
+
+            zIndex: 10,
+            flexDirection: {
+              xs: "column-reverse",
+              sm: "column-reverse",
+              md: "row-reverse",
+              lg: "row-reverse",
+            },
+          }}
         >
           <TextField
             label="category"

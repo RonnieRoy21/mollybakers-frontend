@@ -2,16 +2,19 @@ import type { SxProps, Theme } from "@mui/material/styles";
 
 class HomeGridStyles {
   static grid: SxProps<Theme> = {
-    padding: 0.1,
-    marginTop: 1,
+    marginTop: 2,
     height: "100%",
     width: "100%",
+    justifyContent: "center",
   };
-  static mainstack: SxProps<Theme> = {
-    backgroundColor: "darkgray",
-    padding: 1,
-    marginTop: 8,
-    opacity: 1,
+  static texts: SxProps<Theme> = {
+    fontSize: {
+      xs: 12,
+      sm: 14,
+      md: 16,
+      lg: 18,
+      xl: 19,
+    },
   };
   static filterStack: SxProps<Theme> = {
     position: "sticky",
@@ -23,7 +26,13 @@ class HomeGridStyles {
     backgroundColor: "burlywood",
   };
   static card: SxProps<Theme> = {
-    width: 130,
+    width: {
+      xs: 150,
+      sm: 160,
+      md: 170,
+      lg: 180,
+      xl: 200,
+    },
     height: "fit-content",
     borderRadius: 2,
     padding: 0.5,

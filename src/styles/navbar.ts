@@ -9,10 +9,12 @@ export class NavBarstyles {
     flexGrow: 1,
   };
   static authStack: SxProps<Theme> = {
+    flexDirection: "row-reverse",
     marginRight: 1,
   };
   static categoryBox: SxProps<Theme> = {
     width: 100,
+    height: "fit-content",
     marginRight: 1,
   };
   static menuBtns: SxProps<Theme> = {
