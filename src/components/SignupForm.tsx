@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 
 function SignupForm() {
   const dispatch = useAppDispatch();
-  const { isCreated, message, userId } = useAppSelector((state) => state.auth);
+  const { message } = useAppSelector((state) => state.auth);
   const classes = useStyles();
   const [emailErr, setEmailErr] = useState(false);
   const [pswdErr, setPswdErr] = useState(false);
