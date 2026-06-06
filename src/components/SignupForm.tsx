@@ -8,6 +8,9 @@ import {
 import { makeStyles } from "@mui/styles";
 import { useState } from "react";
 import { SignUpStyles } from "../styles/signup";
+import { useAppDispatch, useAppSelector } from "../redux/config";
+import { showSnackBar } from "../redux/SnackBarStore";
+import { signUp } from "../database/SupabaseLogic";
 
 const useStyles = makeStyles({
   btnGroup: {
@@ -16,6 +19,8 @@ const useStyles = makeStyles({
 });
 
 function SignupForm() {
+  const dispatch = useAppDispatch();
+  const { isCreated, message, userId } = useAppSelector((state) => state.auth);
   const classes = useStyles();
   const [emailErr, setEmailErr] = useState(false);
   const [pswdErr, setPswdErr] = useState(false);
@@ -25,7 +30,7 @@ function SignupForm() {
   const [pswd, setPswd] = useState("");
   const [confirmedPswd, setConfirmedPswd] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setEmailErr(false);
     setPswdErr(false);
     setConfirmedPswdErr(false);
@@ -45,9 +50,20 @@ function SignupForm() {
         setConfirmedPswdErr(true);
       }
     } else {
-      console.log(email);
-      console.log(pswd);
-      console.log(confirmedPswd);
+      const result = await dispatch(
+        signUp({
+          Email: email,
+          Password: pswd,
+        }),
+      );
+
+      if (signUp.fulfilled.match(result)) {
+        dispatch(showSnackBar({ isOpen: true, message: message }));
+        return;
+      } else if (signUp.rejected.match(result)) {
+        dispatch(showSnackBar({ isOpen: true, message: "Error:" + message }));
+        return;
+      }
     }
   };
 
@@ -93,13 +109,15 @@ function SignupForm() {
               label="confirm password"
             />
             <ButtonGroup className={classes.btnGroup}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </Button>
+              </>
 
               <Button variant="contained" color="error" onClick={handleClear}>
                 Clear

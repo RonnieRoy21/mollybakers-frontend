@@ -12,9 +12,7 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
-import { useState } from "react";
 import HomeGridStyles from "../styles/homegrid";
-import { CartModel } from "../models/CartModel";
 import type { CakeModel } from "../models/ItemModel";
 import { useAppDispatch, useAppSelector } from "../redux/config";
 import { addToCart, removeFromCart } from "../redux/CartStore";
@@ -128,7 +126,6 @@ const items: CakeModel[] = [
 function HomeGrid() {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.cartItems);
-  const [likedItems, setLikedItems] = useState<CakeModel[]>([]);
 
   const handleAddToCart = (item: CakeModel) => {
     if (cartItems.some((c) => c.id === item.id)) {
@@ -137,7 +134,6 @@ function HomeGrid() {
     dispatch(addToCart(item));
   };
 
-  const handleLikeCake = (item: CakeModel) => {};
   return (
     <>
       <Grid
@@ -179,7 +175,6 @@ function HomeGrid() {
                   }
                   size="small"
                   title="likes"
-                  onClick={() => handleLikeCake(item)}
                 >
                   {item.likes}
                 </Button>
