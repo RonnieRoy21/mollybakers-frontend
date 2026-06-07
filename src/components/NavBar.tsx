@@ -1,102 +1,78 @@
-import { AppBar, Button, Drawer, Stack } from "@mui/material";
-import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
-import Home from "../screens/Home";
-import SignupForm from "./SignupForm";
-import LoginForm from "./LoginForm";
-import { NavBarstyles } from "../styles/navbar";
+import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
+
+import HomeIcon from "@mui/icons-material/Home";
+import InfoIcon from "@mui/icons-material/Info";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
+
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../redux/config";
-import Cart from "../screens/Cart";
-import Orders from "../screens/Orders";
-import { useState } from "react";
-import MenuIcon from "@mui/icons-material/Menu";
-// import DrawerNavigation from "./drawer";
 
-function NavBar() {
-  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
+const BottomNav = () => {
+  const { isLoggedIn } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
 
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const location = useLocation();
+
   return (
-    <>
-      <BrowserRouter>
-        <header>
-          <AppBar sx={NavBarstyles.navBar} enableColorOnDark position="fixed">
-            <nav>
-              <Stack direction={"column-reverse"}>
-                <Button
-                  size="medium"
-                  sx={{ justifyContent: "left" }}
-                  onClick={() => setDrawerIsOpen(true)}
-                  startIcon={<MenuIcon />}
-                />
-                <Drawer
-                  open={drawerIsOpen}
-                  onClose={() => setDrawerIsOpen(false)}
-                >
-                  <Stack direction="column" sx={NavBarstyles.menuStack}>
-                    {/* <DrawerNavigation /> */}
-                    <Link to="/">
-                      <Button sx={NavBarstyles.menuBtns} variant="text">
-                        Home
-                      </Button>
-                    </Link>
-                    {isLoggedIn ? (
-                      <>
-                        <Link to="/orders">
-                          <Button sx={NavBarstyles.menuBtns} variant="text">
-                            Orders
-                          </Button>
-                        </Link>
-                        <Link to="/offers">
-                          <Button sx={NavBarstyles.menuBtns} variant="text">
-                            Offers
-                          </Button>
-                        </Link>
-                        <Link to="/cart">
-                          <Button sx={NavBarstyles.menuBtns} variant="text">
-                            Cart
-                          </Button>
-                        </Link>
-                      </>
-                    ) : null}
-                  </Stack>
-                </Drawer>
+    <Paper
+      elevation={3}
+      sx={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+      }}
+    >
+      <BottomNavigation
+        value={location.pathname}
+        onChange={(_, newValue) => {
+          navigate(newValue);
+        }}
+      >
+        <BottomNavigationAction
+          showLabel
+          label="Home"
+          value="/"
+          icon={<HomeIcon />}
+        />
 
-                <Stack sx={NavBarstyles.authStack}>
-                  {!isLoggedIn ? (
-                    <>
-                      <Link to="/login">
-                        <Button size="small" variant="contained">
-                          Login
-                        </Button>
-                      </Link>
-                      <Link to="/signUp">
-                        <Button size="small" variant="outlined">
-                          Sign Up
-                        </Button>
-                      </Link>
-                    </>
-                  ) : (
-                    <Button size="small" variant="outlined">
-                      Logout
-                    </Button>
-                  )}
-                </Stack>
-              </Stack>
-            </nav>
-          </AppBar>
-        </header>
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/signUp" element={<SignupForm />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route />
-          </Routes>
-        </main>
-      </BrowserRouter>
-    </>
+        {isLoggedIn ? (
+          <BottomNavigationAction
+            showLabel
+            label="Cart"
+            value="/cart"
+            icon={<InfoIcon />}
+          />
+        ) : null}
+        {isLoggedIn ? (
+          <BottomNavigationAction
+            showLabel
+            label="Orders"
+            value="/orders"
+            icon={<ContactMailIcon />}
+          />
+        ) : null}
+
+        {!isLoggedIn ? (
+          <BottomNavigationAction
+            showLabel
+            label="SignUp"
+            value="/signUp"
+            icon={<InfoIcon />}
+          />
+        ) : null}
+
+        {!isLoggedIn ? (
+          <BottomNavigationAction
+            showLabel
+            label="Login"
+            value="/login"
+            icon={<ContactMailIcon />}
+          />
+        ) : null}
+      </BottomNavigation>
+    </Paper>
   );
-}
-export default NavBar;
+};
+
+export default BottomNav;

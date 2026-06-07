@@ -126,6 +126,7 @@ const items: CakeModel[] = [
 function HomeGrid() {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.cartItems);
+  const { isLoggedIn } = useAppSelector((state) => state.auth);
 
   const handleAddToCart = (item: CakeModel) => {
     if (cartItems.some((c) => c.id === item.id)) {
@@ -178,17 +179,19 @@ function HomeGrid() {
                 >
                   {item.likes}
                 </Button>
-                <IconButton
-                  color={
-                    cartItems.some((c) => c.id === item.id)
-                      ? "secondary"
-                      : "default"
-                  }
-                  title="Add to cart"
-                  onClick={() => handleAddToCart(item)}
-                >
-                  <ShoppingCartIcon />
-                </IconButton>
+                {isLoggedIn ? (
+                  <IconButton
+                    color={
+                      cartItems.some((c) => c.id === item.id)
+                        ? "secondary"
+                        : "default"
+                    }
+                    title="Add to cart"
+                    onClick={() => handleAddToCart(item)}
+                  >
+                    <ShoppingCartIcon />
+                  </IconButton>
+                ) : null}
               </Stack>
             </CardActions>
           </Card>

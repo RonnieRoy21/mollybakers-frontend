@@ -82,6 +82,10 @@ function SignupForm() {
         <form action="submit" onSubmit={(e) => e.preventDefault()}>
           <Stack spacing={2}>
             <TextField
+              sx={{
+                width: "100%",
+                backgroundColor: "whitesmoke",
+              }}
               id="emailField"
               required
               type="email"
@@ -91,6 +95,10 @@ function SignupForm() {
               label="Email"
             />
             <TextField
+              sx={{
+                width: "100%",
+                backgroundColor: "whitesmoke",
+              }}
               id="pswdField"
               required
               type="text"
@@ -100,6 +108,10 @@ function SignupForm() {
               label="Password"
             />
             <TextField
+              sx={{
+                width: "100%",
+                backgroundColor: "whitesmoke",
+              }}
               id="confirmedPswdField"
               required
               type="text"

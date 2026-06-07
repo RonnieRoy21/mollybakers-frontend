@@ -52,7 +52,7 @@ export const signUp = createAsyncThunk<
     password: Password,
   });
   if (error) {
-    return thunkAPI.rejectWithValue("Error from server." + error.message);
+    return thunkAPI.rejectWithValue(error.message);
   }
   if (data.user === null) {
     return thunkAPI.rejectWithValue("Account creation Failed");
@@ -60,16 +60,20 @@ export const signUp = createAsyncThunk<
   return data.user!.id;
 });
 
-export const signIn = createAsyncThunk(
-  "sign-in",
-  async ({ Email, Password }: accountProps) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: Email,
-      password: Password,
-    });
-    if (error || data === null) {
-      return null;
-    }
-    return data.user.id;
-  },
-);
+export const signIn = createAsyncThunk<
+  string,
+  accountProps,
+  { rejectValue: string }
+>("sign-in", async ({ Email, Password }: accountProps, thunkAPI) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: Email,
+    password: Password,
+  });
+  if (error) {
+    return thunkAPI.rejectWithValue(error.message);
+  }
+  if (data.user === null) {
+    return thunkAPI.rejectWithValue("Account creation Failed");
+  }
+  return data.user.id;
+});

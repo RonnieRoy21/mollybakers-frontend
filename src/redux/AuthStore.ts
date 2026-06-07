@@ -7,7 +7,7 @@ export const authStore = createSlice({
     isLoggedIn: false,
     isCreated: false,
     userId: "",
-    message: "",
+    message: "Please wait...",
   },
   reducers: {},
   extraReducers(builder) {
@@ -28,11 +28,14 @@ export const authStore = createSlice({
       .addCase(signIn.pending, (state) => {
         state.isLoggedIn = false;
       })
-      .addCase(signIn.fulfilled, (state) => {
+      .addCase(signIn.fulfilled, (state, action) => {
         state.isLoggedIn = true;
+        state.userId = action.payload;
+        state.message = "Success";
       })
-      .addCase(signIn.rejected, (state) => {
+      .addCase(signIn.rejected, (state, action) => {
         state.isLoggedIn = false;
+        state.message = action.error.message!;
       });
   },
 });

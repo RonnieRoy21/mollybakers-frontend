@@ -5,12 +5,12 @@ export class LoginFormstyles {
     marginTop: 15,
     paddingBottom: 5,
     paddingTop: 5,
-    paddingLeft: "20%",
-    paddingRight: "20%",
+    paddingLeft: "10%",
+    paddingRight: "10%",
     backgroundColor: "burlywood",
   };
   static loginbtn: SxProps<Theme> = {
-    width: "fit-content",
+    width: "100%",
     alignSelf: "center",
     backgroundColor: "greenyellow",
   };

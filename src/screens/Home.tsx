@@ -23,30 +23,28 @@ function Home() {
       <Stack
         sx={{
           backgroundColor: "skyblue",
-          marginTop: 8,
           opacity: 1,
         }}
       >
         <Stack
           spacing={1}
           sx={{
-            backgroundColor: "darkgray",
+            backgroundColor: "whitesmoke",
             position: "sticky",
-            top: "10%",
+            top: 0,
             opacity: 1,
-
             zIndex: 10,
             flexDirection: {
-              xs: "column-reverse",
-              sm: "column-reverse",
-              md: "row-reverse",
-              lg: "row-reverse",
+              xs: "column",
+              sm: "column",
+              md: "row",
+              lg: "row",
             },
           }}
         >
           <TextField
             label="category"
-            sx={NavBarstyles.categoryBox}
+            sx={{ height: "fit-content", backgroundColor: "darkgrey" }}
             select
             value={selectedCategory}
             onChange={handleCategoryChange}
@@ -57,7 +55,11 @@ function Home() {
               </MenuItem>
             ))}
           </TextField>
-          <TextField variant="outlined" label="Search..." />
+          <TextField
+            sx={{ height: "fit-content", backgroundColor: "darkgrey" }}
+            variant="outlined"
+            label="Search..."
+          />
         </Stack>
         <HomeGrid></HomeGrid>
       </Stack>

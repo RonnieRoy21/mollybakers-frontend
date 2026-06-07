@@ -13,9 +13,8 @@ export class NavBarstyles {
     marginRight: 1,
   };
   static categoryBox: SxProps<Theme> = {
-    width: 100,
+    width: "100%",
     height: "fit-content",
-    marginRight: 1,
   };
   static menuBtns: SxProps<Theme> = {
     width: "fit-content",
