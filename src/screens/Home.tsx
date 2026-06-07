@@ -1,6 +1,5 @@
 import { MenuItem, Stack, TextField } from "@mui/material";
 import HomeGrid from "../components/HomeGrid";
-import { NavBarstyles } from "../styles/navbar";
 import { useState } from "react";
 
 function Home() {
