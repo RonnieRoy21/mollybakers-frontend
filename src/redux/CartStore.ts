@@ -1,26 +1,33 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { CakeModel } from "../models/ItemModel";
-
-const cartItems: CakeModel[] = [];
+import type { cake } from "../database/SupabaseLogic";
+interface cartItem {
+  cake: cake;
+  quantity: number;
+}
+const cartItems: cartItem[] = [];
 export const cartStore = createSlice({
   name: "cart",
   initialState: { cartItems },
   reducers: {
-    addToCart: (state, action: PayloadAction<CakeModel>) => {
-      if (cartItems.some((c) => c.id === action.payload.id)) {
+    addToCart: (state, action: PayloadAction<cake>) => {
+      if (cartItems.some((c) => c.cake.cake_id === action.payload.cake_id)) {
         return;
       }
-      state.cartItems.push(action.payload);
+      state.cartItems.push({ cake: action.payload, quantity: 1 });
     },
-    removeFromCart: (state, action: PayloadAction<CakeModel>) => {
-      if (cartItems.some((c) => c.id === action.payload.id)) {
-        state.cartItems.filter((c) => c.id !== action.payload.id);
+    removeFromCart: (state, action: PayloadAction<cake>) => {
+      if (cartItems.some((c) => c.cake.cake_id === action.payload.cake_id)) {
+        state.cartItems.filter(
+          (c) => c.cake.cake_id !== action.payload.cake_id,
+        );
         return;
       }
       return;
     },
     addQuantity: (state, action: PayloadAction<number>) => {
-      const item = state.cartItems.find((c) => c.id === action.payload);
+      const item = state.cartItems.find(
+        (c) => c.cake.cake_id === action.payload,
+      );
 
       if (item) {
         item.quantity += 1;
@@ -29,7 +36,9 @@ export const cartStore = createSlice({
       return;
     },
     reduceQuantity: (state, action: PayloadAction<number>) => {
-      const item = state.cartItems.find((c) => c.id === action.payload);
+      const item = state.cartItems.find(
+        (c) => c.cake.cake_id === action.payload,
+      );
 
       if (item) {
         item.quantity -= 1;

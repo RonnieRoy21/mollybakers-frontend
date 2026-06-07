@@ -23,7 +23,7 @@ export const authStore = createSlice({
       })
       .addCase(signUp.rejected, (state, action) => {
         state.isCreated = false;
-        state.message = action.error.message!.toString();
+        state.message = action.payload!;
       })
       .addCase(signIn.pending, (state) => {
         state.isLoggedIn = false;
@@ -35,7 +35,7 @@ export const authStore = createSlice({
       })
       .addCase(signIn.rejected, (state, action) => {
         state.isLoggedIn = false;
-        state.message = action.error.message!;
+        state.message = action.payload!;
       });
   },
 });

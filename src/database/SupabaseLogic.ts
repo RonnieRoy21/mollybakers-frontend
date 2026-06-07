@@ -77,3 +77,20 @@ export const signIn = createAsyncThunk<
   }
   return data.user.id;
 });
+
+//get cakes
+export const getCakes = createAsyncThunk<cake[], void, { rejectValue: string }>(
+  "get-cakes",
+  async (_, thunkAPI) => {
+    const { data, error } = await supabase.from("cake").select("*");
+
+    if (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+    if (data === null) {
+      return thunkAPI.rejectWithValue("Account creation Failed");
+    }
+
+    return data ?? [];
+  },
+);

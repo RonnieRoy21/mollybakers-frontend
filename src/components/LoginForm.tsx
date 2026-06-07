@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from "../redux/config";
 import { signIn } from "../database/SupabaseLogic";
 import { showSnackBar } from "../redux/SnackBarStore";
 import { useNavigate } from "react-router-dom";
-//import { useAppDispatch } from "../redux/config";
 function LoginForm() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -35,7 +34,6 @@ function LoginForm() {
     );
     if (signIn.pending.match(result)) {
       dispatch(showSnackBar({ isOpen: true, message: message }));
-      return;
     }
     if (signIn.fulfilled.match(result)) {
       dispatch(showSnackBar({ isOpen: true, message: message }));
@@ -44,7 +42,6 @@ function LoginForm() {
 
     if (signIn.rejected.match(result)) {
       dispatch(showSnackBar({ isOpen: true, message: message }));
-      return;
     }
   };
 

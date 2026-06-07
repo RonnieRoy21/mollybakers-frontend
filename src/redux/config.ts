@@ -3,9 +3,11 @@ import * as reactRedux from "react-redux";
 import snackBarStore from "./SnackBarStore";
 import authStore from "./AuthStore";
 import cartStore from "./CartStore";
+import databaseStore from "./DatabaseStore";
 export const store = configureStore({
   reducer: {
     auth: authStore,
+    database: databaseStore,
     cart: cartStore,
     snackBar: snackBarStore,
   },

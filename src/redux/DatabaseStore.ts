@@ -1,26 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { likeItem } from "../database/SupabaseLogic";
+import { getCakes, likeItem, type cake } from "../database/SupabaseLogic";
 
 //like item
 
-const databaseSlice = createSlice({
+const databaseStore = createSlice({
   name: "database",
   initialState: {
-    data: [],
+    cakes: [] as cake[],
     error: "",
-    success: false,
+    isLiked: false,
     isLoading: false,
   },
   reducers: {},
   extraReducers(builder) {
     builder
+      .addCase(likeItem.pending, (state) => {
+        state.isLiked = false;
+      })
       .addCase(likeItem.fulfilled, (state) => {
-        state.success = true;
+        state.isLiked = true;
       })
       .addCase(likeItem.rejected, (state) => {
-        state.success = false;
+        state.isLiked = false;
+      })
+      .addCase(getCakes.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getCakes.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.cakes = action.payload;
+      })
+      .addCase(getCakes.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload!.toString();
       });
   },
 });
 
-export default databaseSlice.reducer;
+export default databaseStore.reducer;
