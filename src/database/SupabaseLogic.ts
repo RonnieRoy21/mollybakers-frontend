@@ -8,45 +8,79 @@ export type user = Database["public"]["Tables"]["customers"]["Row"];
 export type cake = Database["public"]["Tables"]["cake"]["Row"];
 export type order = Database["public"]["Tables"]["orders"]["Row"];
 
-//like an item
+//fucntion to like an item
 interface likeItemProps {
-  id: number;
+  userId: string;
+  itemId: number;
   isLiked: boolean;
 }
 export const likeItem = createAsyncThunk(
   "like-item",
-  async ({ id, isLiked }: likeItemProps) => {
-    var likes: PostgrestResponse<cake> = await supabase
+  async ({ userId, itemId }: likeItemProps, thunkAPI) => {
+    //get list of liked items of userr
+    const u: PostgrestResponse<user> = await supabase
+      .from("customers")
+      .select("*")
+      .eq("customer_id", userId);
+    if (u.data === null) {
+      return thunkAPI.rejectWithValue("User not found");
+    }
+    var liked_items = u.data[0].liked_items;
+    if (liked_items === null) {
+      liked_items = [];
+    }
+
+    //get the number of likes for the item matching id
+    const l: PostgrestResponse<cake> = await supabase
       .from("cake")
       .select("*")
-      .eq("cake_id", id);
-    if (likes.data === null) {
-      return "Something went wrong";
+      .eq("cake_id", itemId);
+    if (l.data === null) {
+      return thunkAPI.rejectWithValue("Item currently not available");
     }
-    const newLikes: number = isLiked
-      ? likes.data[0].likes + 1
-      : likes.data[0].likes - 1;
-    const { error } = await supabase
-      .from("cake")
-      .upsert({ likes: newLikes })
-      .eq("cake_id", id);
+    var currentLikes = l.data[0].likes;
 
-    if (error) {
-      return error.message;
+    // check if item is already in the list
+    if (liked_items.includes(itemId)) {
+      //if in list remove it and reduce itemlikes by 1
+      liked_items.filter((e) => e !== itemId);
+      currentLikes = currentLikes - 1;
+    } else {
+      //if not add to list and increase itemlikes by one
+
+      liked_items.push(itemId);
+      currentLikes = currentLikes + 1;
     }
+    //update item likes
+    await supabase
+      .from("cake")
+      .update({ likes: currentLikes })
+      .eq("cake_id", itemId);
+
+    //update user liked items
+    await supabase
+      .from("customers")
+      .update({ liked_items: liked_items })
+      .eq("customer_id", userId);
   },
 );
 
 //sign up
-interface accountProps {
+interface signUpProps {
+  Email: string;
+  Password: string;
+  loc: string;
+  phone: string;
+}
+interface signInProps {
   Email: string;
   Password: string;
 }
 export const signUp = createAsyncThunk<
   string,
-  accountProps,
+  signUpProps,
   { rejectValue: string }
->("sign-up", async ({ Email, Password }: accountProps, thunkAPI) => {
+>("sign-up", async ({ Email, Password, loc, phone }: signUpProps, thunkAPI) => {
   const { data, error } = await supabase.auth.signUp({
     email: Email,
     password: Password,
@@ -57,14 +91,34 @@ export const signUp = createAsyncThunk<
   if (data.user === null) {
     return thunkAPI.rejectWithValue("Account creation Failed");
   }
+  await supabase.from("customers").insert({
+    customer_id: data.user.id,
+    email: data.user.email,
+    liked_items: [],
+    location: loc,
+    phone_number: phone,
+  });
+
   return data.user!.id;
 });
 
+//restore session
+export const getSession = createAsyncThunk(
+  "get-session",
+  async (_, thunkAPI) => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session === null || data.session?.user.id === null) {
+      return thunkAPI.rejectWithValue("Session Expired.Login again");
+    }
+    return data.session.user.id;
+  },
+);
+
 export const signIn = createAsyncThunk<
   string,
-  accountProps,
+  signInProps,
   { rejectValue: string }
->("sign-in", async ({ Email, Password }: accountProps, thunkAPI) => {
+>("sign-in", async ({ Email, Password }: signInProps, thunkAPI) => {
   const { data, error } = await supabase.auth.signInWithPassword({
     email: Email,
     password: Password,

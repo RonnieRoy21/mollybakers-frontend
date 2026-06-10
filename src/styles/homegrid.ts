@@ -1,12 +1,6 @@
 import type { SxProps, Theme } from "@mui/material/styles";
 
 class HomeGridStyles {
-  static grid: SxProps<Theme> = {
-    marginTop: 2,
-    height: "100%",
-    width: "100%",
-    justifyContent: "center",
-  };
   static texts: SxProps<Theme> = {
     fontSize: {
       xs: 12,

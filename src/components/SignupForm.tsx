@@ -20,24 +20,32 @@ const useStyles = makeStyles({
 
 function SignupForm() {
   const dispatch = useAppDispatch();
-  const { message } = useAppSelector((state) => state.auth);
+  const message = useAppSelector((state) => state.auth.message);
   const classes = useStyles();
   const [emailErr, setEmailErr] = useState(false);
   const [pswdErr, setPswdErr] = useState(false);
   const [confirmedPswdErr, setConfirmedPswdErr] = useState(false);
+  const [locErr, setLocErr] = useState(false);
+  const [numErr, setPhoneNumErr] = useState(false);
 
   const [email, setEmail] = useState("");
   const [pswd, setPswd] = useState("");
   const [confirmedPswd, setConfirmedPswd] = useState("");
+  const [loc, setLoc] = useState("");
+  const [num, setPhoneNum] = useState("");
 
   const handleSubmit = async () => {
     setEmailErr(false);
     setPswdErr(false);
     setConfirmedPswdErr(false);
+    setLocErr(false);
+    setPhoneNumErr(false);
     if (
       email.trim() === "" ||
       pswd.trim() === "" ||
-      confirmedPswd.trim() === ""
+      confirmedPswd.trim() === "" ||
+      loc.trim() === "" ||
+      num.trim() === ""
     ) {
       if (email.trim() == "") {
         setEmailErr(true);
@@ -49,20 +57,35 @@ function SignupForm() {
       if (confirmedPswd.trim() == "") {
         setConfirmedPswdErr(true);
       }
+      if (num.trim() == "") {
+        setPhoneNumErr(true);
+      }
+      if (loc.trim() == "") {
+        setLocErr(true);
+      }
     } else {
-      const result = await dispatch(
+      const r = await dispatch(
         signUp({
           Email: email,
           Password: pswd,
+          loc: loc,
+          phone: num,
         }),
       );
 
-      if (signUp.fulfilled.match(result)) {
+      if (signUp.pending.match(r)) {
+        dispatch(
+          showSnackBar({
+            isOpen: true,
+            message: message,
+          }),
+        );
+      }
+      if (signUp.fulfilled.match(r)) {
         dispatch(showSnackBar({ isOpen: true, message: message }));
-        return;
-      } else if (signUp.rejected.match(result)) {
+      }
+      if (signUp.rejected.match(r)) {
         dispatch(showSnackBar({ isOpen: true, message: "Error:" + message }));
-        return;
       }
     }
   };
@@ -71,9 +94,14 @@ function SignupForm() {
     setEmail("");
     setConfirmedPswd("");
     setPswd("");
+    setLoc("");
+    setPhoneNum("");
+
     setEmailErr(false);
     setPswdErr(false);
     setConfirmedPswdErr(false);
+    setLocErr(false);
+    setPhoneNumErr(false);
   };
 
   return (
@@ -119,6 +147,32 @@ function SignupForm() {
               onChange={(e) => setConfirmedPswd(e.target.value)}
               error={confirmedPswdErr}
               label="confirm password"
+            />
+            <TextField
+              sx={{
+                width: "100%",
+                backgroundColor: "whitesmoke",
+              }}
+              id="location"
+              required
+              type="text"
+              value={loc}
+              onChange={(e) => setLoc(e.target.value)}
+              error={locErr}
+              label="Add Pick Up Station"
+            />
+            <TextField
+              sx={{
+                width: "100%",
+                backgroundColor: "whitesmoke",
+              }}
+              id="phoneNumber"
+              required
+              type="text"
+              value={num}
+              onChange={(e) => setPhoneNum(e.target.value)}
+              error={numErr}
+              label="Contact number"
             />
             <ButtonGroup className={classes.btnGroup}>
               <>

@@ -1,9 +1,10 @@
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 
 import HomeIcon from "@mui/icons-material/Home";
-import InfoIcon from "@mui/icons-material/Info";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
-
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import LoginIcon from "@mui/icons-material/Login";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../redux/config";
 
@@ -41,7 +42,7 @@ const BottomNav = () => {
             showLabel
             label="Cart"
             value="/cart"
-            icon={<InfoIcon />}
+            icon={<AddShoppingCartIcon />}
           />
         ) : null}
         {isLoggedIn ? (
@@ -58,7 +59,7 @@ const BottomNav = () => {
             showLabel
             label="SignUp"
             value="/signUp"
-            icon={<InfoIcon />}
+            icon={<PersonAddAlt1Icon />}
           />
         ) : null}
 
@@ -67,7 +68,7 @@ const BottomNav = () => {
             showLabel
             label="Login"
             value="/login"
-            icon={<ContactMailIcon />}
+            icon={<LoginIcon />}
           />
         ) : null}
       </BottomNavigation>

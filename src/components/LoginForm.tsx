@@ -26,21 +26,23 @@ function LoginForm() {
       setEmailErr(true);
       return;
     }
-    const result = await dispatch(
+
+    const r = await dispatch(
       signIn({
         Email: loginEmail,
         Password: loginPassword,
       }),
     );
-    if (signIn.pending.match(result)) {
+
+    if (signIn.pending.match(r)) {
       dispatch(showSnackBar({ isOpen: true, message: message }));
     }
-    if (signIn.fulfilled.match(result)) {
+    if (signIn.fulfilled.match(r)) {
       dispatch(showSnackBar({ isOpen: true, message: message }));
       navigate("/");
     }
 
-    if (signIn.rejected.match(result)) {
+    if (signIn.rejected.match(r)) {
       dispatch(showSnackBar({ isOpen: true, message: message }));
     }
   };

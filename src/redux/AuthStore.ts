@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { signIn, signUp } from "../database/SupabaseLogic";
+import { getSession, signIn, signUp } from "../database/SupabaseLogic";
 
 export const authStore = createSlice({
   name: "login",
@@ -7,18 +7,17 @@ export const authStore = createSlice({
     isLoggedIn: false,
     isCreated: false,
     userId: "",
-    message: "Please wait...",
+    message: "",
   },
   reducers: {},
   extraReducers(builder) {
     builder
       .addCase(signUp.pending, (state) => {
-        state.isCreated = false;
         state.message = "Creating ...";
       })
       .addCase(signUp.fulfilled, (state, action) => {
         state.isCreated = true;
-        state.message = "Success";
+        state.message = "Account created.Time to login";
         state.userId = action.payload;
       })
       .addCase(signUp.rejected, (state, action) => {
@@ -26,7 +25,7 @@ export const authStore = createSlice({
         state.message = action.payload!;
       })
       .addCase(signIn.pending, (state) => {
-        state.isLoggedIn = false;
+        state.message = "Logging in ...";
       })
       .addCase(signIn.fulfilled, (state, action) => {
         state.isLoggedIn = true;
@@ -34,8 +33,18 @@ export const authStore = createSlice({
         state.message = "Success";
       })
       .addCase(signIn.rejected, (state, action) => {
-        state.isLoggedIn = false;
         state.message = action.payload!;
+      })
+      .addCase(getSession.pending, (state) => {
+        state.message = "Refreshing...";
+      })
+      .addCase(getSession.fulfilled, (state, action) => {
+        state.message = "Session restored";
+        state.userId = action.payload;
+        state.isLoggedIn = true;
+      })
+      .addCase(getSession.rejected, (state, action) => {
+        state.message = action.payload as string;
       });
   },
 });
