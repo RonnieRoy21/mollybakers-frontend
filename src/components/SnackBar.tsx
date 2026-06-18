@@ -10,7 +10,7 @@ function CustomSnackBar() {
       <Snackbar
         message={message}
         open={isOpen}
-        autoHideDuration={2500}
+        autoHideDuration={1000}
         onClose={() => dispatch(hideSnackBar())}
       />
     </>

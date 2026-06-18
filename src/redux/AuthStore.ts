@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   addItemToCart,
   getSession,
+  logoutUser,
   signIn,
   signUp,
 } from "../database/SupabaseLogic";
@@ -19,6 +20,16 @@ export const authStore = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder
+      .addCase(logoutUser.pending, (state) => {
+        state.message = "Signing Out...";
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.isLoggedIn = false;
+        state.userId = "";
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.message = action.payload as string;
+      })
       .addCase(signUp.pending, (state) => {
         state.message = "Creating ...";
       })

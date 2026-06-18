@@ -2,13 +2,13 @@ import {
   Container,
   List,
   ListItem,
-  ListItemButton,
   ListItemText,
   Stack,
   Typography,
   Checkbox,
   Button,
 } from "@mui/material";
+
 import { useAppDispatch, useAppSelector } from "../redux/config";
 import {
   addQuantity,
@@ -17,29 +17,23 @@ import {
   type cartItem,
 } from "../redux/CartStore";
 import type { cake } from "../database/SupabaseLogic";
-import { useState } from "react";
 
 function Cart() {
-  const [isChecked, setIsChecked] = useState<number[]>([]);
   const { cartItems, totalCost } = useAppSelector((state) => state.cart);
 
   const dispatch = useAppDispatch();
   const handleIncrease = (e: cake) => {
-    setIsChecked(() => {
-      return isChecked.filter((c) => c !== e.cake_id);
-    });
     dispatch(addQuantity(e.cake_id));
   };
   const handleDecrease = (e: cake) => {
-    setIsChecked(() => {
-      return isChecked.filter((c) => c !== e.cake_id);
-    });
     dispatch(reduceQuantity(e.cake_id));
   };
   const handleCheckboxChange = (e: cartItem) => {
     //check if its in the chekd list
     //if so remove
     //else add
+    console.log(e);
+
     return dispatch(checkOutCart(e));
   };
   return (
@@ -55,7 +49,7 @@ function Cart() {
         </Typography>
         <List>
           {cartItems.map((e) => (
-            <Stack direction="row">
+            <Stack direction="row" key={e.cake.cake_id}>
               <img src={e.cake.cake_url!} alt="" width={30} height={30} />
               <ListItem
                 sx={{
@@ -67,12 +61,12 @@ function Cart() {
               >
                 <ListItemText>
                   <Stack direction={"row"} spacing={1}>
-                    <Typography variant="body2">{e.cake.cake_name}</Typography>
-                    <Typography variant="caption">
+                    <Typography variant="h6">{e.cake.cake_name}</Typography>
+                    <Typography variant="h6">
                       Ksh {e.cake.cake_price}
                     </Typography>
                   </Stack>
-                  <Typography variant="subtitle2">
+                  <Typography variant="subtitle1">
                     Quantity:{e.quantity}
                   </Typography>
                 </ListItemText>
@@ -80,43 +74,42 @@ function Cart() {
                   sx={{ flexDirection: "end", alignContent: "space-between" }}
                   direction="row"
                 >
-                  <ListItemButton
+                  <Button
+                    variant="contained"
+                    size="small"
                     sx={{
                       flexGrow: 1,
+                      marginRight: 1,
+
                       fontSize: { xs: 16, sm: 18, md: 20, lg: 22, xl: 22 },
                     }}
-                    onClick={() => handleDecrease(e.cake)}
+                    onClick={() => {
+                      handleDecrease(e.cake);
+                    }}
                   >
                     -
-                  </ListItemButton>
-                  <ListItemButton
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="contained"
                     sx={{
                       flexGrow: 1,
                       fontSize: { xs: 16, sm: 18, md: 20, lg: 22, xl: 22 },
                       marginRight: 5,
                     }}
-                    onClick={() => handleIncrease(e.cake)}
+                    onClick={() => {
+                      handleIncrease(e.cake);
+                    }}
                   >
                     +
-                  </ListItemButton>
+                  </Button>
                   <Checkbox
                     sx={{
                       alignContent: "end",
                     }}
-                    color={isChecked ? "primary" : "default"}
-                    checked={
-                      isChecked.some((c) => c === e.cake.cake_id) ? true : false
-                    }
+                    color={e.isChecked ? "primary" : "default"}
+                    checked={e.isChecked}
                     onChange={(ev) => {
-                      if (isChecked.some((c) => c === e.cake.cake_id)) {
-                        setIsChecked(() => {
-                          return isChecked.filter((c) => c !== e.cake.cake_id);
-                        });
-                      } else {
-                        setIsChecked((isChecked) => {
-                          return [...isChecked, e.cake.cake_id];
-                        });
-                      }
                       handleCheckboxChange({
                         cake: e.cake,
                         quantity: e.quantity,

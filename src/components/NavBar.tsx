@@ -5,10 +5,13 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../redux/config";
+import { useAppDispatch, useAppSelector } from "../redux/config";
+import { logoutUser } from "../database/SupabaseLogic";
 
 const BottomNav = () => {
+  const dispatch = useAppDispatch();
   const { isLoggedIn } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
@@ -69,6 +72,17 @@ const BottomNav = () => {
             label="Login"
             value="/login"
             icon={<LoginIcon />}
+          />
+        ) : null}
+        {isLoggedIn ? (
+          <BottomNavigationAction
+            showLabel
+            label="Logout"
+            onClick={() => {
+              dispatch(logoutUser());
+            }}
+            value="/"
+            icon={<LogoutIcon />}
           />
         ) : null}
       </BottomNavigation>

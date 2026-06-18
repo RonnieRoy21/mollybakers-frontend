@@ -168,6 +168,19 @@ export const signIn = createAsyncThunk<
   return user;
 });
 
+//sign out
+export const logoutUser = createAsyncThunk<
+  boolean,
+  void,
+  { rejectValue: string }
+>("logout", async (_, thunkAPI) => {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    return thunkAPI.rejectWithValue(error.message);
+  }
+  return true;
+});
+
 //get cakes
 export const getCakes = createAsyncThunk<cake[], void, { rejectValue: string }>(
   "get-cakes",
