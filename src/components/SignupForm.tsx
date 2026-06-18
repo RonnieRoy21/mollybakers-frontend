@@ -5,23 +5,14 @@ import {
   Container,
   TextField,
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { useState } from "react";
-import { SignUpStyles } from "../styles/signup";
 import { useAppDispatch, useAppSelector } from "../redux/config";
 import { showSnackBar } from "../redux/SnackBarStore";
 import { signUp } from "../database/SupabaseLogic";
 
-const useStyles = makeStyles({
-  btnGroup: {
-    gap: 20,
-  },
-});
-
 function SignupForm() {
   const dispatch = useAppDispatch();
   const message = useAppSelector((state) => state.auth.message);
-  const classes = useStyles();
   const [emailErr, setEmailErr] = useState(false);
   const [pswdErr, setPswdErr] = useState(false);
   const [confirmedPswdErr, setConfirmedPswdErr] = useState(false);
@@ -106,7 +97,15 @@ function SignupForm() {
 
   return (
     <>
-      <Container sx={SignUpStyles.container}>
+      <Container
+        sx={{
+          paddingBottom: 5,
+          paddingTop: 5,
+          paddingLeft: "10%",
+          paddingRight: "10%",
+          backgroundColor: "burlywood",
+        }}
+      >
         <form action="submit" onSubmit={(e) => e.preventDefault()}>
           <Stack spacing={2}>
             <TextField
@@ -174,9 +173,16 @@ function SignupForm() {
               error={numErr}
               label="Contact number"
             />
-            <ButtonGroup className={classes.btnGroup}>
+            <ButtonGroup
+              sx={{
+                alignContent: "space-between",
+              }}
+            >
               <>
                 <Button
+                  sx={{
+                    marginRight: 5,
+                  }}
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}

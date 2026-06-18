@@ -35,10 +35,10 @@ function LoginForm() {
     );
 
     if (signIn.pending.match(r)) {
-      dispatch(showSnackBar({ isOpen: true, message: message }));
+      dispatch(showSnackBar({ isOpen: true, message: "Just a minute..." }));
     }
     if (signIn.fulfilled.match(r)) {
-      dispatch(showSnackBar({ isOpen: true, message: message }));
+      dispatch(showSnackBar({ isOpen: true, message: "Welcome back" }));
       navigate("/");
     }
 

@@ -65,6 +65,33 @@ export const likeItem = createAsyncThunk(
   },
 );
 
+//add item to cart
+interface cartItem {
+  cakeId: number;
+  userId: string;
+}
+export const addItemToCart = createAsyncThunk(
+  "addItemToCart",
+  async ({ cakeId, userId }: cartItem) => {
+    // get  user's existing cart
+    var existingCart = (
+      await supabase
+        .from("customers")
+        .select("cart_items")
+        .eq("customer_id", userId)
+        .single()
+    ).data!;
+    var cartItems = existingCart.cart_items;
+    // check if cake id exists already
+    if (cartItems.some((c) => c === cakeId)) {
+      cartItems = cartItems.filter((c) => c !== cakeId);
+    } else {
+      cartItems.push(cakeId);
+    }
+    await supabase.from("customers").update({ cart_items: cartItems });
+  },
+);
+
 //sign up
 interface signUpProps {
   Email: string;
@@ -97,6 +124,7 @@ export const signUp = createAsyncThunk<
     liked_items: [],
     location: loc,
     phone_number: phone,
+    cart_items: [],
   });
 
   return data.user!.id;
@@ -115,7 +143,7 @@ export const getSession = createAsyncThunk(
 );
 
 export const signIn = createAsyncThunk<
-  string,
+  user,
   signInProps,
   { rejectValue: string }
 >("sign-in", async ({ Email, Password }: signInProps, thunkAPI) => {
@@ -127,9 +155,17 @@ export const signIn = createAsyncThunk<
     return thunkAPI.rejectWithValue(error.message);
   }
   if (data.user === null) {
-    return thunkAPI.rejectWithValue("Account creation Failed");
+    return thunkAPI.rejectWithValue("Login Failed");
   }
-  return data.user.id;
+  const user = (
+    await supabase
+      .from("customers")
+      .select("*")
+      .eq("customer_id", data.user.id)
+      .single()
+  ).data!;
+
+  return user;
 });
 
 //get cakes
@@ -142,7 +178,7 @@ export const getCakes = createAsyncThunk<cake[], void, { rejectValue: string }>(
       return thunkAPI.rejectWithValue(error.message);
     }
     if (data === null) {
-      return thunkAPI.rejectWithValue("Account creation Failed");
+      return thunkAPI.rejectWithValue("No Stock found");
     }
 
     return data ?? [];

@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getSession, signIn, signUp } from "../database/SupabaseLogic";
+import {
+  addItemToCart,
+  getSession,
+  signIn,
+  signUp,
+} from "../database/SupabaseLogic";
 
 export const authStore = createSlice({
   name: "login",
@@ -8,6 +13,8 @@ export const authStore = createSlice({
     isCreated: false,
     userId: "",
     message: "",
+    cartItems: [] as number[],
+    likedItems: [] as number[],
   },
   reducers: {},
   extraReducers(builder) {
@@ -29,7 +36,9 @@ export const authStore = createSlice({
       })
       .addCase(signIn.fulfilled, (state, action) => {
         state.isLoggedIn = true;
-        state.userId = action.payload;
+        state.userId = action.payload.customer_id;
+        state.cartItems = action.payload.cart_items;
+        state.likedItems = action.payload.liked_items!;
         state.message = "Success";
       })
       .addCase(signIn.rejected, (state, action) => {
@@ -45,6 +54,12 @@ export const authStore = createSlice({
       })
       .addCase(getSession.rejected, (state, action) => {
         state.message = action.payload as string;
+      })
+      .addCase(addItemToCart.fulfilled, (state) => {
+        state.message = "Done";
+      })
+      .addCase(addItemToCart.rejected, (state) => {
+        state.message = "Unable to Add to cart";
       });
   },
 });

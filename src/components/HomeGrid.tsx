@@ -14,56 +14,51 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import HomeGridStyles from "../styles/homegrid";
 import { useAppDispatch, useAppSelector } from "../redux/config";
-import { addToCart, removeFromCart } from "../redux/CartStore";
-import {
-  getCakes,
-  getSession,
-  likeItem,
-  type cake,
-} from "../database/SupabaseLogic";
-import { useEffect, useState } from "react";
+import { getCakes, likeItem, type cake } from "../database/SupabaseLogic";
+import { useEffect } from "react";
 import { showSnackBar } from "../redux/SnackBarStore";
+import { addToCart, removeFromCart } from "../redux/CartStore";
 
 function HomeGrid() {
   //my variables and states
-  const [likedItems, setLikedItems] = useState<cake[]>([]);
   const dispatch = useAppDispatch();
   const { cakes, error, isLoading } = useAppSelector((state) => state.database);
+  const { likedItems, isLoggedIn, userId } = useAppSelector(
+    (state) => state.auth,
+  );
   const cartItems = useAppSelector((state) => state.cart.cartItems);
-  const { isLoggedIn, userId, message } = useAppSelector((state) => state.auth);
-
   //restore session
-  const handleRestoreSession = async () => {
-    await dispatch(getSession());
-    if (getSession.pending.match(message)) {
-      dispatch(
-        showSnackBar({
-          isOpen: true,
-          message: message,
-        }),
-      );
-      return false;
-    }
-    if (getSession.rejected.match(message)) {
-      dispatch(
-        showSnackBar({
-          isOpen: true,
-          message: message,
-        }),
-      );
-      return false;
-    }
-    if (getSession.fulfilled.match(message)) {
-      dispatch(
-        showSnackBar({
-          isOpen: true,
-          message: message,
-        }),
-      );
-      return true;
-    }
-    return false;
-  };
+  // const handleRestoreSession = async () => {
+  //   const r = await dispatch(getSession());
+  //   if (getSession.pending.match(r)) {
+  //     dispatch(
+  //       showSnackBar({
+  //         isOpen: true,
+  //         message: message,
+  //       }),
+  //     );
+  //     return false;
+  //   }
+  //   if (getSession.rejected.match(r)) {
+  //     dispatch(
+  //       showSnackBar({
+  //         isOpen: true,
+  //         message: message,
+  //       }),
+  //     );
+  //     return false;
+  //   }
+  //   if (getSession.fulfilled.match(r)) {
+  //     dispatch(
+  //       showSnackBar({
+  //         isOpen: true,
+  //         message: message,
+  //       }),
+  //     );
+  //     return true;
+  //   }
+  // };
+
   //fetching cakes
   useEffect(() => {
     const fetchCakes = async () => {
@@ -74,7 +69,7 @@ function HomeGrid() {
 
   //adding to cart
   const handleAddToCart = async (item: cake) => {
-    if (!isLoggedIn && (await handleRestoreSession()) === false) {
+    if (!isLoggedIn) {
       return dispatch(
         showSnackBar({
           isOpen: true,
@@ -84,48 +79,59 @@ function HomeGrid() {
     }
     if (cartItems.some((c) => c.cake.cake_id === item.cake_id)) {
       dispatch(removeFromCart(item));
+      dispatch(
+        showSnackBar({
+          isOpen: true,
+          message: "Item removed from cart",
+        }),
+      );
     }
     dispatch(addToCart(item));
+    dispatch(
+      showSnackBar({
+        isOpen: true,
+        message: "Item added to cart",
+      }),
+    );
   };
 
   //handling item likes
   const handleLikeItem = async (item: cake) => {
-    if (!isLoggedIn && !(await handleRestoreSession())) {
+    if (!isLoggedIn) {
       return dispatch(
         showSnackBar({
           isOpen: true,
           message: "You have to be logged in first",
         }),
       );
-    }
-    if (likedItems.some((c) => c.cake_id === item.cake_id)) {
-      setLikedItems(likedItems.filter((f) => f.cake_id !== item.cake_id));
+    } else {
+      if (likedItems.some((c) => c === item.cake_id)) {
+        const r = await dispatch(
+          likeItem({ userId: userId, itemId: item.cake_id, isLiked: false }),
+        );
+        if (likeItem.fulfilled.match(r)) {
+          dispatch(
+            showSnackBar({
+              isOpen: true,
+              message: "Help us improve by commenting.",
+            }),
+          );
+        }
+        return;
+      }
       const r = await dispatch(
-        likeItem({ userId: userId, itemId: item.cake_id, isLiked: false }),
+        likeItem({ userId: userId, itemId: item.cake_id, isLiked: true }),
       );
       if (likeItem.fulfilled.match(r)) {
         dispatch(
           showSnackBar({
             isOpen: true,
-            message: "Help us improve by commenting.",
+            message: "Glad you love it.",
           }),
         );
       }
       return;
     }
-    setLikedItems((prev) => [...prev, item]);
-    const r = await dispatch(
-      likeItem({ userId: userId, itemId: item.cake_id, isLiked: true }),
-    );
-    if (likeItem.fulfilled.match(r)) {
-      dispatch(
-        showSnackBar({
-          isOpen: true,
-          message: "Glad you love it.",
-        }),
-      );
-    }
-    return;
   };
   return (
     <>
@@ -179,36 +185,40 @@ function HomeGrid() {
                   </Typography>
                 </CardContent>
 
-                <CardActions>
-                  <Stack spacing={2} direction={"row"}>
-                    <Button
-                      onClick={() => handleLikeItem(item)}
-                      endIcon={
-                        <FavoriteIcon
-                          color={
-                            likedItems.includes(item) ? "primary" : "disabled"
-                          }
-                        />
-                      }
-                      size="small"
-                      title="likes"
-                    >
-                      {item.likes}
-                    </Button>
+                {isLoggedIn ? (
+                  <CardActions>
+                    <Stack spacing={2} direction={"row"}>
+                      <Button
+                        onClick={() => handleLikeItem(item)}
+                        endIcon={
+                          <FavoriteIcon
+                            color={
+                              likedItems.some((c) => c === item.cake_id)
+                                ? "primary"
+                                : "disabled"
+                            }
+                          />
+                        }
+                        size="small"
+                        title="likes"
+                      >
+                        {item.likes}
+                      </Button>
 
-                    <IconButton
-                      color={
-                        cartItems.some((c) => c.cake.cake_id === item.cake_id)
-                          ? "secondary"
-                          : "default"
-                      }
-                      title="Add to cart"
-                      onClick={() => handleAddToCart(item)}
-                    >
-                      <ShoppingCartIcon />
-                    </IconButton>
-                  </Stack>
-                </CardActions>
+                      <IconButton
+                        color={
+                          cartItems.some((c) => c.cake.cake_id === item.cake_id)
+                            ? "secondary"
+                            : "default"
+                        }
+                        title="Add to cart"
+                        onClick={() => handleAddToCart(item)}
+                      >
+                        <ShoppingCartIcon />
+                      </IconButton>
+                    </Stack>
+                  </CardActions>
+                ) : null}
               </Card>
             ))}
           </>

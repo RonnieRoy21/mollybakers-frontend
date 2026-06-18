@@ -74,6 +74,7 @@ export type Database = {
       };
       customers: {
         Row: {
+          cart_items: number[];
           customer_id: string;
           email: string | null;
           liked_items: number[] | null;
@@ -81,6 +82,7 @@ export type Database = {
           phone_number: string | null;
         };
         Insert: {
+          cart_items?: number[];
           customer_id?: string;
           email?: string | null;
           liked_items?: number[] | null;
@@ -88,6 +90,7 @@ export type Database = {
           phone_number?: string | null;
         };
         Update: {
+          cart_items?: number[];
           customer_id?: string;
           email?: string | null;
           liked_items?: number[] | null;
