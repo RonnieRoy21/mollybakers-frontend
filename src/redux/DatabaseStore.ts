@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getCakes, likeItem, type cake } from "../database/SupabaseLogic";
+import { getCakes, type cake } from "../database/SupabaseLogic";
 
 //like item
 
@@ -8,21 +8,13 @@ const databaseStore = createSlice({
   initialState: {
     cakes: [] as cake[],
     error: "",
-    isLiked: false,
+    message: "",
     isLoading: false,
   },
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(likeItem.pending, (state) => {
-        state.isLiked = false;
-      })
-      .addCase(likeItem.fulfilled, (state) => {
-        state.isLiked = true;
-      })
-      .addCase(likeItem.rejected, (state) => {
-        state.isLiked = false;
-      })
+
       .addCase(getCakes.pending, (state) => {
         state.isLoading = true;
       })

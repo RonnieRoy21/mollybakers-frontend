@@ -55,12 +55,10 @@ export const authStore = createSlice({
       .addCase(signIn.rejected, (state, action) => {
         state.message = action.payload!;
       })
-      .addCase(getSession.pending, (state) => {
-        state.message = "Refreshing...";
-      })
+
       .addCase(getSession.fulfilled, (state, action) => {
-        state.message = "Session restored";
-        state.userId = action.payload;
+        state.userId = action.payload.id;
+        state.message = action.payload.msg;
         state.isLoggedIn = true;
       })
       .addCase(getSession.rejected, (state, action) => {

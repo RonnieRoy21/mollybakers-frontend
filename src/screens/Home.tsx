@@ -11,26 +11,25 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import MoreIcon from "@mui/icons-material/More";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-
 import HomeGridStyles from "../styles/homegrid";
 import { useAppDispatch, useAppSelector } from "../redux/config";
-import { getCakes, likeItem, type cake } from "../database/SupabaseLogic";
+import { getCakes, type cake } from "../database/SupabaseLogic";
 import { useEffect } from "react";
 import { showSnackBar } from "../redux/SnackBarStore";
 import { addToCart, removeFromCart } from "../redux/CartStore";
+import ViewMore from "../components/ViewMore";
 
 function Home() {
   //my variables and states
   const dispatch = useAppDispatch();
   const { cakes, error, isLoading } = useAppSelector((state) => state.database);
-  const { likedItems, isLoggedIn, userId } = useAppSelector(
-    (state) => state.auth,
-  );
+  const { isLoggedIn } = useAppSelector((state) => state.auth);
   const cartItems = useAppSelector((state) => state.cart.cartItems);
-
   const [searchList, setSearchList] = useState<cake[]>([]);
+  const [itemToView, setItemToView] = useState<cake | null>(null);
+
   const handleSearchItem = (word: string) => {
     setSearchList(
       cakes.filter((w) =>
@@ -41,13 +40,6 @@ function Home() {
       ),
     );
   };
-  //fetching cakes
-  useEffect(() => {
-    const fetchCakes = async () => {
-      await dispatch(getCakes());
-    };
-    fetchCakes();
-  }, [dispatch]);
 
   //adding to cart
   const handleAddToCart = async (item: cake) => {
@@ -69,44 +61,13 @@ function Home() {
     );
   };
 
-  //handling item likes
-  const handleLikeItem = async (item: cake) => {
-    if (!isLoggedIn) {
-      return dispatch(
-        showSnackBar({
-          isOpen: true,
-          message: "You have to be logged in first",
-        }),
-      );
-    } else {
-      if (likedItems.some((c) => c === item.cake_id)) {
-        const r = await dispatch(
-          likeItem({ userId: userId, itemId: item.cake_id, isLiked: false }),
-        );
-        if (likeItem.fulfilled.match(r)) {
-          dispatch(
-            showSnackBar({
-              isOpen: true,
-              message: "Help us improve by commenting.",
-            }),
-          );
-        }
-        return;
-      }
-      const r = await dispatch(
-        likeItem({ userId: userId, itemId: item.cake_id, isLiked: true }),
-      );
-      if (likeItem.fulfilled.match(r)) {
-        dispatch(
-          showSnackBar({
-            isOpen: true,
-            message: "Glad you love it.",
-          }),
-        );
-      }
-      return;
-    }
+  const fetchCakes = async () => {
+    await dispatch(getCakes());
   };
+  //fetching cakes
+  useEffect(() => {
+    fetchCakes();
+  }, [dispatch]);
 
   return (
     <>
@@ -193,30 +154,24 @@ function Home() {
                           noWrap
                           variant="body2"
                         >
-                          Ksh {item.cake_price}
+                          Ksh. {item.cake_price}
                         </Typography>
                       </CardContent>
 
-                      {isLoggedIn ? (
-                        <CardActions>
-                          <Stack spacing={2} direction={"row"}>
-                            <Button
-                              onClick={() => handleLikeItem(item)}
-                              endIcon={
-                                <FavoriteIcon
-                                  color={
-                                    likedItems.some((c) => c === item.cake_id)
-                                      ? "primary"
-                                      : "disabled"
-                                  }
-                                />
-                              }
-                              size="small"
-                              title="likes"
-                            >
-                              {item.likes}
-                            </Button>
-
+                      <CardActions>
+                        <Stack spacing={2} direction={"row"}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => {
+                              setItemToView(item);
+                            }}
+                            endIcon={<MoreIcon />}
+                            size="small"
+                            title="likes"
+                          >
+                            View
+                          </Button>
+                          {isLoggedIn ? (
                             <IconButton
                               color={
                                 cartItems.some(
@@ -230,15 +185,22 @@ function Home() {
                             >
                               <ShoppingCartIcon />
                             </IconButton>
-                          </Stack>
-                        </CardActions>
-                      ) : null}
+                          ) : null}
+                        </Stack>
+                      </CardActions>
                     </Card>
                   ),
                 )}
               </>
             )}
           </Grid>
+          {itemToView && (
+            <ViewMore
+              c={itemToView!}
+              isOpen={itemToView ? true : false}
+              onClose={() => setItemToView(null)}
+            />
+          )}
         </>
       </Stack>
     </>

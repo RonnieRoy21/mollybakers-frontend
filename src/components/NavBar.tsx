@@ -80,8 +80,9 @@ const BottomNav = () => {
             label="Logout"
             onClick={() => {
               dispatch(logoutUser());
+              navigate("/");
             }}
-            value="/"
+            value="/logout"
             icon={<LogoutIcon />}
           />
         ) : null}

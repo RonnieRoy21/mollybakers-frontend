@@ -32,16 +32,15 @@ function Cart() {
     //check if its in the chekd list
     //if so remove
     //else add
-    console.log(e);
-
     return dispatch(checkOutCart(e));
   };
   return (
     <>
-      <Container sx={{ marginTop: 1 }}>
+      <Container sx={{ marginTop: 1, backgroundColor: "goldenrod" }}>
         <Typography
+          variant="h5"
           sx={{
-            marginLeft: "30%",
+            justifyContent: "center",
             textDecoration: "underline",
           }}
         >
@@ -50,25 +49,24 @@ function Cart() {
         <List>
           {cartItems.map((e) => (
             <Stack direction="row" key={e.cake.cake_id}>
-              <img src={e.cake.cake_url!} alt="" width={30} height={30} />
+              <img src={e.cake.cake_url!} alt="" width={60} height={60} />
               <ListItem
                 sx={{
                   flexDirection: "column",
                   alignContent: "start",
-                  flexGrow: 1,
                 }}
                 disablePadding
               >
                 <ListItemText>
-                  <Stack direction={"row"} spacing={1}>
-                    <Typography variant="h6">{e.cake.cake_name}</Typography>
-                    <Typography variant="h6">
+                  <Typography variant="h6">{e.cake.cake_name}</Typography>
+                  <Stack direction={"row"} spacing={3}>
+                    <Typography variant="subtitle1">
+                      Quantity:{e.quantity}
+                    </Typography>
+                    <Typography variant="subtitle2">
                       Ksh {e.cake.cake_price}
                     </Typography>
                   </Stack>
-                  <Typography variant="subtitle1">
-                    Quantity:{e.quantity}
-                  </Typography>
                 </ListItemText>
                 <Stack
                   sx={{ flexDirection: "end", alignContent: "space-between" }}
