@@ -78,7 +78,7 @@ export const getSession = createAsyncThunk<
 >("get-session", async (_, thunkAPI) => {
   const { data } = await supabase.auth.getSession();
   if (data.session === null || data.session?.user.id === null) {
-    return thunkAPI.rejectWithValue("Login again to proceed");
+    return thunkAPI.rejectWithValue("Login to proceed");
   }
   return { id: data.session.user.id, msg: "Page Refreshed." };
 });
