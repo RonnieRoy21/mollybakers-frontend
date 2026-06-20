@@ -62,7 +62,6 @@ export const signUp = createAsyncThunk<
   await supabase.from("customers").insert({
     customer_id: data.user.id,
     email: data.user.email,
-    liked_items: [],
     location: loc,
     phone_number: phone,
     cart_items: [],

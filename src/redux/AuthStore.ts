@@ -15,7 +15,6 @@ export const authStore = createSlice({
     userId: "",
     message: "",
     cartItems: [] as number[],
-    likedItems: [] as number[],
   },
   reducers: {},
   extraReducers(builder) {
@@ -49,7 +48,6 @@ export const authStore = createSlice({
         state.isLoggedIn = true;
         state.userId = action.payload.customer_id;
         state.cartItems = action.payload.cart_items;
-        state.likedItems = action.payload.liked_items!;
         state.message = "Success";
       })
       .addCase(signIn.rejected, (state, action) => {
